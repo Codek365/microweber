@@ -42,23 +42,23 @@
 
 
 
-<a
-    class="mw-ui-btn mw-ui-btn-icon"
-    href="javascript:;"
-    onclick="$('#add-subscriber-form').show()">
-    <span class="mw-icon-plus"><?php _e('Add new subscriber'); ?></span> </a>
-<form id="add-subscriber-form" onSubmit="edit_subscriber(this); return false;" style="display:none">
-    <div class="mw-ui-field-holder">
-        <label class="mw-ui-label"><?php _e('Subscriber Name'); ?></label>
-        <input name="name" type="text" class="mw-ui-field"/>
-    </div>
-    <div class="mw-ui-field-holder">
-        <label class="mw-ui-label"><?php _e('Subscriber Email'); ?></label>
-        <input name="email" type="text" class="mw-ui-field"/>
-    </div>
-    <button type="submit" class="mw-ui-btn"><?php _e('Save'); ?></button>
+<a class="mw-ui-btn mw-ui-btn-icon" href="javascript:;"
+	onclick="$('#add-subscriber-form').show()"> <span class="mw-icon-plus"></span> <?php _e('Add new subscriber'); ?></a>
+
+<br />
+<br />
+
+<form id="add-subscriber-form"
+	onSubmit="edit_subscriber(this); return false;" style="display: none">
+	<div class="mw-ui-field-holder">
+		<label class="mw-ui-label"><?php _e('Subscriber Name'); ?></label> <input
+			name="name" type="text" class="mw-ui-field" />
+	</div>
+	<div class="mw-ui-field-holder">
+		<label class="mw-ui-label"><?php _e('Subscriber Email'); ?></label> <input
+			name="email" type="text" class="mw-ui-field" />
+	</div>
+	<button type="submit" class="mw-ui-btn"><?php _e('Save'); ?></button>
 </form>
 
 <module type="newsletter/subscribers_list"/>
-
-
