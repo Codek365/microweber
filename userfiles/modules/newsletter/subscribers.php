@@ -1,23 +1,96 @@
 <?php only_admin_access(); ?>
-<script>
-    function edit_subscriber(form) {
-        var data = mw.serializeFields(form);
-        $.ajax({
-            url: mw.settings.api_url + 'newsletter_save_subscriber',
-            type: 'POST',
-            data: data,
-            success: function (result) {
-                mw.notification.success('<?php _e('Subscriber saved'); ?>');
-                $('#add-subscriber-form').hide();
-                $('#add-subscriber-form')[0].reset();
 
-                //reload the modules
-                mw.reload_module('newsletter/subscribers_list')
-                mw.reload_module_parent('newsletter');
-            }
-        });
+<style>
+.mw-ui-field-full-width {
+	width:100%;
+}
+.js-danger-text {
+	padding-top: 5px;
+	color: #c21f1f;
+}
+</style>
+
+<script>
+
+	$(document).ready(function () {
+		
+		$(document).on("change", ".js-validation", function() {
+			$(':input').each(function() {
+				if ($(this).hasClass('js-validation')) {
+					runFieldsValidation(this);
+				}
+			});
+		});
+		
+	});
+
+	function runFieldsValidation(instance) {
+		
+		var ok = true;
+		var inputValue = $(instance).val().trim();
+		
+		$(instance).removeAttr("style");
+		$(instance).parent().find(".js-field-message").html('');
+
+		if (inputValue == "") {
+			$(instance).css("border", "1px solid #b93636");
+			$(instance).parent().find('.js-field-message').html(errorText('<?php _e('The field cannot be empty'); ?>'));
+			ok = false;
+		}
+
+		return ok;
+	}
+	
+	function errorText(text) {
+		return '<div class="js-danger-text">' + text + '</div>';
+	}
+	
+	function add_subscriber() {
+		add_subscriber_modal = mw.tools.open_module_modal('newsletter/add_subscriber', false, {overlay: true, skin: 'simple'});
+	}
+	
+    function edit_subscriber(form) {
+        
+    	   var errors = {};
+         var data = mw.serializeFields(form);
+        
+			$(':input').each(function(k,v) {
+					if ($(this).hasClass('js-validation')) {
+						if (runFieldsValidation(this) == false) {
+							errors[k] = true;
+						}
+					}
+			});
+		
+        if (errors.lenght == 0) {
+	        $.ajax({
+	            url: mw.settings.api_url + 'newsletter_save_subscriber',
+	            type: 'POST',
+	            data: data,
+	            success: function (result) {
+	                mw.notification.success('<?php _e('Subscriber saved'); ?>');
+	                
+	                $('#add-subscriber-form').hide();
+	                $('#add-subscriber-form')[0].reset();
+	
+	                // Remove modal
+	                if (typeof(add_subscriber_modal) != 'undefined' && add_subscriber_modal.modal) {
+	               		add_subscriber_modal.modal.remove();
+				       }
+				       
+	                // Reload the modules
+	                mw.reload_module('newsletter/subscribers_list')
+	                mw.reload_module_parent('newsletter');
+	
+	            }
+	        });
+        } else {
+       		mw.notification.error('<?php _e('Please fill correct data.'); ?>');
+        }
+        
         return false;
     }
+    
     function delete_subscriber(id) {
         var ask = confirm("<?php _e('Are you sure you want to delete this subscriber?'); ?>");
         if (ask == true) {
@@ -30,7 +103,7 @@
                 success: function (result) {
                     mw.notification.success('<?php _e('Subscriber deleted'); ?>');
 
-                    //reload the modules
+                    // Reload the modules
                     mw.reload_module('newsletter/subscribers_list')
                     mw.reload_module_parent('newsletter')
                 }
@@ -40,25 +113,11 @@
     }
 </script>
 
-
-
-<a class="mw-ui-btn mw-ui-btn-icon" href="javascript:;"
-	onclick="$('#add-subscriber-form').show()"> <span class="mw-icon-plus"></span> <?php _e('Add new subscriber'); ?></a>
+<button class="mw-ui-btn mw-ui-btn-icon" onclick="add_subscriber();"> 
+	<span class="mw-icon-plus"></span> <?php _e('Add new subscriber'); ?>
+</button>
 
 <br />
 <br />
-
-<form id="add-subscriber-form"
-	onSubmit="edit_subscriber(this); return false;" style="display: none">
-	<div class="mw-ui-field-holder">
-		<label class="mw-ui-label"><?php _e('Subscriber Name'); ?></label> <input
-			name="name" type="text" class="mw-ui-field" />
-	</div>
-	<div class="mw-ui-field-holder">
-		<label class="mw-ui-label"><?php _e('Subscriber Email'); ?></label> <input
-			name="email" type="text" class="mw-ui-field" />
-	</div>
-	<button type="submit" class="mw-ui-btn"><?php _e('Save'); ?></button>
-</form>
 
 <module type="newsletter/subscribers_list"/>
