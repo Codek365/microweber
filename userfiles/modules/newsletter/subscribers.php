@@ -9,9 +9,9 @@
 	color: #c21f1f;
 }
 </style>
-
 <script>
-
+	mw.require("<?php print $config['url_to_module'];?>/js/js-helper.js");
+	
 	$(document).ready(function () {
 		
 		$(document).on("change", ".js-validation", function() {
@@ -38,11 +38,15 @@
 			ok = false;
 		}
 
+		if ($(instance).hasClass('js-validation-email')) {
+			if (validateEmail(inputValue) == false) {
+				$(instance).css("border", "1px solid #b93636");
+				$(instance).parent().find('.js-field-message').html(errorText('<?php _e('The email address is not valid.'); ?>'));
+				ok = false;
+			}
+		}
+
 		return ok;
-	}
-	
-	function errorText(text) {
-		return '<div class="js-danger-text">' + text + '</div>';
 	}
 	
 	function add_subscriber() {
@@ -62,7 +66,7 @@
 					}
 			});
 		
-        if (errors.lenght == 0) {
+        if (isEmpty(errors)) {
 	        $.ajax({
 	            url: mw.settings.api_url + 'newsletter_save_subscriber',
 	            type: 'POST',

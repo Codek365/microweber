@@ -20,17 +20,26 @@ $subscribers = newsletter_get_subscribers($subscribers_params);
             </thead>
             <tbody>
             <?php foreach ($subscribers as $subscriber): ?>
-                <tr id="newsletter-subscriber-<?php print $subscriber['id']; ?>">
+                <tr>
                     <td><?php print $subscriber['created_at']; ?></td>
-                    <td><input type="text" class="mw-ui-field" name="name" value="<?php print $subscriber['name']; ?>"/></td>
-                    <td><input type="email" class="mw-ui-field" name="email" value="<?php print $subscriber['email']; ?>"/></td>
-                    <td><select class="mw-ui-field mw-ui-field-medium" name="is_subscribed">
-                            <option value="1" <?php if ($subscriber['is_subscribed']): ?>  selected <?php endif; ?> ><?php _e('Yes'); ?></option>
-                            <option value="0" <?php if (!$subscriber['is_subscribed']): ?>  selected <?php endif; ?> ><?php _e('No'); ?></option>
-                        </select></td>
-                    <td><input type="hidden" name="id" value="<?php print $subscriber['id']; ?>"/>
-                        <button class="mw-ui-btn mw-ui-btn-notification" onclick="edit_subscriber('#newsletter-subscriber-<?php print $subscriber['id']; ?>')"><?php _e('Save'); ?></button>
-                        <a class="mw-ui-btn mw-ui-btn-icon mw-ui-btn-important" href="javascript:;" onclick="delete_subscriber('<?php print $subscriber['id']; ?>')"> <span class="mw-icon-bin"></span> </a></td>
+                    <td>
+                    <?php print $subscriber['name']; ?>
+                    </td>
+                    <td>
+                    <?php print $subscriber['email']; ?>
+                    </td>
+                    <td>
+                    <?php
+                    if ($subscriber['is_subscribed']) {
+                    		_e('Yes');
+                    } else {
+                    		_e('No');
+                    }
+                    ?>
+                    </td>
+                    <td>
+                        <button class="mw-ui-btn" onclick="edit_subscriber('<?php print $subscriber['id']; ?>')"><?php _e('Edit'); ?></button>
+                        <a class="mw-ui-btn mw-ui-btn-icon" href="javascript:;" onclick="delete_subscriber('<?php print $subscriber['id']; ?>')"> <span class="mw-icon-bin"></span> </a></td>
                 </tr>
             <?php endforeach; ?>
             </tbody>
